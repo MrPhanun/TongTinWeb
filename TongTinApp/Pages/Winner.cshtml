@@ -1,0 +1,144 @@
+@page
+@model WinnerModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Winner";
+}
+
+<div class="winner-container">
+    <!-- Winner box -->
+    <div class="winner-box">
+        <label>Winner : </label>
+        <span>@Model.WinnerName</span>
+    </div>
+
+    <!-- Search bar -->
+    <form method="post" asp-page-handler="Search" class="search-bar">
+        <input type="text" name="SearchText" placeholder="Search By Name" />
+        <button type="submit" class="search-btn">🔍</button>
+    </form>
+
+    <!-- Wheel -->
+    <div class="wheel-wrapper">
+        <canvas id="wheelCanvas" width="400" height="400"></canvas>
+        <div class="pointer"></div>
+    </div>
+
+    <!-- Spin button -->
+    <button type="button" class="spin-btn" onclick="spinWheel()">Spin</button>
+
+    <!-- Members table -->
+    <table class="members-table">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Remark</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var m in Model.Members)
+        {
+            <tr>
+                <td>@m.Id</td>
+                <td>@m.Name</td>
+                <td>@m.Status</td>
+                <td>@m.Doing</td>
+                <td>@m.Role</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+
+
+@section Scripts {
+<script>
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+    const radius = canvas.width/2;
+
+    // Names from Razor model
+        const names = @Html.Raw(JsonSerializer.Serialize(
+            Model.Members.Select(m => m.Name).ToList(),
+            new JsonSerializerOptions()
+        ));
+
+        const ids = @Html.Raw(JsonSerializer.Serialize(
+            Model.Members.Select(m => m.Id).ToList(),
+            new JsonSerializerOptions()
+        ));
+        const colors = ["red","blue","green","yellow","purple","cyan","orange","pink"];
+    function drawWheel(angle=0) {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        const segments = names.length;
+        for(let i=0;i<segments;i++){
+            ctx.beginPath();
+            ctx.moveTo(radius,radius);
+            ctx.arc(radius,radius,radius,
+                angle+i*(2*Math.PI/segments),
+                angle+(i+1)*(2*Math.PI/segments));
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.fill();
+
+            // Text
+            ctx.save();
+            ctx.translate(radius,radius);
+            ctx.rotate(angle+(i+0.5)*(2*Math.PI/segments));
+            ctx.textAlign="right";
+            ctx.fillStyle="white";
+            ctx.font="16px Arial";
+            ctx.fillText(names[i], radius-10, 5);
+            ctx.restore();
+        }
+    }
+
+    let spinning=false, angle=0, speed=0, startTime=0, duration=3000;
+
+    function spinWheel() {
+        if(spinning) return;
+        spinning=true;
+        speed=Math.random()*0.3+0.25;
+        animate();
+    }
+
+    function animate() {
+        if(!spinning) return;
+        angle+=speed;
+        speed*=0.98;
+        drawWheel(angle);
+        if(speed<0.002){
+            spinning=false;
+            // Pick winner
+            const segments=names.length;
+            const normalized = (angle % (2*Math.PI));
+            const pointerAngle = (3*Math.PI/2 - normalized + 2*Math.PI) % (2*Math.PI);
+            const selected = Math.floor(pointerAngle / (2*Math.PI/segments));
+            // Update Winner box
+            document.querySelector(".winner-box span").textContent = names[selected];
+
+            // Send winner Id to server
+            document.getElementById("winnerIdField").value = ids[selected];
+            document.getElementById("spinForm").submit();
+            alert("The Winner is 🎉" + names[selected] + "🎉")
+        } else {
+            requestAnimationFrame(animate);
+        }
+    }
+
+    drawWheel();
+</script>
+}
+<form id="spinForm" method="post" asp-page-handler="Spin">
+    <input type="hidden" id="winnerIdField" name="WinnerId" />
+</form>
+<footer class="border-top footer text-muted">
+    <a asp-page="/Dashboard" 
+       style="background:#87CEEB; color:black; padding:5px; text-decoration:none; border-radius:20px; border:2px solid black; display:inline-flex; align-items:center;">
+        <img src="~/images/back.png" alt="Back" style="height:30px;">
+        Back
+    </a>
+</footer>   

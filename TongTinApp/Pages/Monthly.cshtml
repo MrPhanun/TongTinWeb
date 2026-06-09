@@ -1,0 +1,48 @@
+@page
+@model TongTinApp.Pages.MonthlyModel
+
+<div style="background-color:green; color:white; padding:10px; font-weight:bold;">
+    Monthly Payment Schedule
+</div>
+
+<div style="display:flex; justify-content:space-between; margin:10px 0;">
+</div>
+<form method="post" asp-page-handler="Search">
+    <input type="text" name="SearchText" placeholder="Search By Name, Month, Year" />
+    <button type="submit">Search</button>
+</form>
+
+<table border="1" cellpadding="5" style="width:100%; border-collapse:collapse;">
+    <tr style="background-color:#f0f0f0;">
+        <th>ID</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Doing</th>
+        <th>Books</th>
+        <th>Money</th>
+        <th>Month</th>
+        <th>Year</th>
+    </tr>
+    @foreach (var row in Model.Results)
+    {
+        <tr>
+            <td>@row.Id</td>
+            <td>@row.Name</td>
+            <td>@row.Role</td>
+            <td>@row.Status</td>
+            <td>@row.Doing</td>
+            <td>@row.Book</td>
+            <td>@row.Money</td>
+            <td>@row.Month</td>
+            <td>@row.Year</td>
+        </tr>
+    }
+</table>
+<footer class="border-top footer text-muted">
+    <a asp-page="/Dashboard" 
+       style="background:#87CEEB; color:black; padding:5px; text-decoration:none; border-radius:20px; border:2px solid black; display:inline-flex; align-items:center;">
+        <img src="~/images/back.png" alt="Back" style="height:30px;">
+        Back
+    </a>
+</footer>

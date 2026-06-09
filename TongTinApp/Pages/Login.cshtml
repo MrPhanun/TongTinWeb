@@ -1,0 +1,77 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Tong Tin Online";
+}
+
+<div style="text-align:center; margin-top:40px;">
+    <!-- Wheel -->
+    <div class="wheel"></div>
+
+    <!-- Title -->
+    <h2 style="margin-top:20px;">Tong Tin Online</h2>
+
+    <!-- Main login form -->
+    <form method="post">
+        <input type="text" id="loginInput" name="UserInput" placeholder="Please enter username"
+               style="padding:10px; width:250px; border-radius:20px; margin-top:20px;" />
+        <br />
+        <button type="submit" id="mainBtn" asp-page-handler="Continue"
+                style="margin-top:15px; padding:10px 20px; background:black; color:white; border:none; border-radius:20px;">
+            Continue
+        </button>
+    </form>
+
+    <!-- Error messages -->
+    <div style="color:red; margin-top:10px;">
+        @Html.ValidationSummary()
+    </div>
+
+    <!-- OR separator -->
+    <div style="margin:20px 0; font-weight:bold;">OR</div>
+
+    <!-- Social login buttons -->
+    <button style="background:#1877f2; color:white; padding:10px 20px; border:1px solid #ccc; border-radius:20px; margin:5px;">
+       <img src="~/images/facebook.png" alt="Google" style="width:20px; height:20px;" /> 
+       Continue with Facebook
+    </button>
+    <button style="background:white; color:black; padding:10px 20px; border:1px solid #ccc; border-radius:20px; margin:5px;">
+        <img src="~/images/google.png" alt="Google" style="width:20px; height:20px;" />
+        Continue with Google
+    </button>
+    <button style="background:black; color:white; padding:10px 20px; border:none; border-radius:20px; margin:5px;">
+        <img src="~/images/apple.png" alt="Google" style="width:20px; height:20px;" />
+         Continue with Apple
+    </button>
+
+    <!-- Back button -->
+    <form method="get" asp-page="/Index">
+        <button type="submit"
+                style="margin-top:20px; padding:10px 20px; background:gray; color:white; border:none;">
+            Back
+        </button>
+    </form>
+</div>
+
+<style>
+footer { display:none !important; }
+</style>
+
+@section Scripts {
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("loginInput");
+    const mainBtn = document.getElementById("mainBtn");
+
+    mainBtn.addEventListener("click", function (e) {
+        if (mainBtn.textContent === "Continue") {
+            e.preventDefault(); // stop form submit
+            input.value = "";
+            input.placeholder = "Enter your role";
+            mainBtn.textContent = "Login";
+            mainBtn.setAttribute("formaction", "?handler=Login");
+        }
+    });
+});
+</script>
+}

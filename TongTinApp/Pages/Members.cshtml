@@ -1,0 +1,147 @@
+@page
+@model TongTinApp.Pages.MembersModel
+@{
+    ViewData["Title"] = "Members";
+}
+
+<script>
+    function showForm(formId) {
+        // hide all forms
+        document.getElementById('addForm').style.display = 'none';
+        document.getElementById('updateForm').style.display = 'none';
+        document.getElementById('deleteForm').style.display = 'none';
+        // show the requested form
+        document.getElementById(formId).style.display = 'block';
+    }
+</script>
+
+<div style="display:flex; gap:10px; margin-bottom:15px;">
+    <!-- Search -->
+    <form method="post" asp-page-handler="Search" style="display:flex; gap:10px;">
+        <input type="text" name="Keyword" placeholder="Search by name or role"
+               style="padding:8px; border:1px solid #ccc; border-radius:5px; width:200px;" />
+        <button type="submit" style="background:#1E90FF; color:white; padding:8px 12px; border:none; border-radius:5px;">
+            Search
+        </button>
+    </form>
+
+    <!-- Add -->
+    <button type="button" onclick="showForm('addForm')"
+            style="background:#32CD32; color:white; padding:8px 12px; border:none; border-radius:5px;">
+        Add
+    </button>
+
+    <!-- Update -->
+    <button type="button" onclick="showForm('updateForm')"
+            style="background:#FFA500; color:white; padding:8px 12px; border:none; border-radius:5px;">
+        Update
+    </button>
+
+    <!-- Delete -->
+    <button type="button" onclick="showForm('deleteForm')"
+            style="background:#DC143C; color:white; padding:8px 12px; border:none; border-radius:5px;">
+        Delete
+    </button>
+</div>
+
+<h2 style="background:#1877f2; color:white; padding:10px; border-radius:5px; margin:0;">Members</h2>
+<p style="font-size:12px; color:gray;"></p>
+
+<!-- Add Form -->
+<div id="addForm" style="display:none; border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px; width:300px;">
+    <form method="post" asp-page-handler="Add">
+        <label>Username:</label><br />
+        <input type="text" name="Name" required /><br />
+
+        <label>Role:</label><br />
+            <select name="Role" required style="padding:5px; border-radius:5px;">
+                <option value="កូន">កូន</option>
+                <option value="មេ">មេ</option>
+            </select><br /><br />
+        <button type="submit" style="background:#32CD32; color:white; padding:8px 12px; border:none; border-radius:5px;">
+            Confirm Add
+        </button>
+    </form>
+</div>
+
+<!-- Update Form -->
+<div id="updateForm" style="display:none; border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px; width:300px;">
+    <form method="post" asp-page-handler="Update">
+        <label>ID:</label><br />
+        <input type="number" name="Id" required /><br />
+        <label>New Username:</label>
+        <input type="text" name="Name" required /><br />
+        <label>New Role:</label><br />
+            <select name="Role" required style="padding:5px; border-radius:5px;">
+                <option value="កូន">កូន</option>
+                <option value="មេ">មេ</option>
+            </select><br /><br />
+        <label>Status:</label><br />
+        <select name="Status" required style="padding:5px; border-radius:5px;">
+            <option value="កំពុងបង់">កំពុងបង់</option>
+            <option value="ទទួល">ទទួល</option>
+        </select><br /><br />
+
+        <label>Doing:</label><br />
+        <select name="Doing" required style="padding:5px; border-radius:5px;">
+            <option value="មិនទាន់ទទួល">មិនទាន់ទទួល</option>
+            <option value="បានទទួល">បានទទួល</option>
+        </select><br /><br />
+
+        <button type="submit" style="background:#FFA500; color:white; padding:8px 12px; border:none; border-radius:5px;">
+            Confirm Update
+        </button>
+    </form>
+</div>
+
+<!-- Delete Form -->
+<div id="deleteForm" style="display:none; border:1px solid #ccc; padding:15px; margin:15px 0; border-radius:8px; width:300px;">
+    <form method="post" asp-page-handler="Delete">
+        <label>ID:</label><br />
+        <input type="number" name="Id" required /><br /><br />
+
+        <button type="submit" style="background:#DC143C; color:white; padding:8px 12px; border:none; border-radius:5px;">
+            Confirm Delete
+        </button>
+    </form>
+</div>
+
+<!-- Members Table -->
+<table style="width:100%; border-collapse:collapse; margin-top:10px;">
+    <thead style="background:#f0f0f0;">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Doing</th>
+            <th>Register By</th>
+            <th>Register Date</th>
+            <th>Update By</th>
+            <th>Update Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var m in Model.MemberList)
+    {
+        <tr>
+            <td>@m.ID</td>
+            <td>@m.Name</td>
+            <td>@m.Role</td>
+            <td>@m.Status</td>
+            <td>@m.Remark</td>
+            <td>@m.RegisterBy</td>
+            <td>@m.RegisterDate.ToString("yyyy-MM-dd")</td>
+            <td>@m.UpdateBy</td>
+            <td>@m.UpdateDate.ToString("yyyy-MM-dd")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+<footer class="border-top footer text-muted">
+    <a asp-page="/Dashboard" 
+       style="background:#87CEEB; color:black; padding:5px; text-decoration:none; border-radius:20px; border:2px solid black; display:inline-flex; align-items:center;">
+        <img src="~/images/back.png" alt="Back" style="height:30px;">
+        Back
+    </a>
+</footer>

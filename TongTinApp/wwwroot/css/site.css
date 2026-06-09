@@ -1,0 +1,43 @@
+
+.wheel {
+    margin:20px auto;
+    width:300px;
+    height:300px;
+    border-radius:50%;
+    border : 10px solid black;              /* red rim */
+    position:relative;
+    background:conic-gradient(
+        red 0deg 60deg,
+        yellow 60deg 120deg,
+        blue 120deg 180deg,
+        green 180deg 240deg,
+        orange 240deg 300deg,
+        pink 300deg 360deg
+    );
+    animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.winner-container { text-align:center; margin-top:20px; }
+.winner-box { background:#f5deb3; padding:10px; margin-bottom:15px; font-size:18px; }
+.search-bar { margin:10px; }
+.search-bar input { padding:5px; }
+.search-btn { padding:5px 10px; }
+.wheel-wrapper { position:relative; margin:20px auto; width:400px; height:400px; }
+.pointer {
+    position:absolute;
+    top:-10px; left:50%;
+    width:0; height:0;
+    border-left:15px solid transparent;
+    border-right:15px solid transparent;
+    border-top:30px solid rgb(226, 55, 212);   /* flipped to point upward from bottom */
+    transform:translateX(-50%);
+}
+
+.spin-btn { background:green; color:white; padding:10px 20px; border:none; cursor:pointer; font-size:16px; }
+.members-table { margin:20px auto; border-collapse:collapse; width:80%; }
+.members-table th, .members-table td { border:1px solid #333; padding:8px 12px; text-align:center; }
